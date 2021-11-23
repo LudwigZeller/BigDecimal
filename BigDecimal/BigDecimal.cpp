@@ -4,74 +4,55 @@
 
 #include "BigDecimal.h"
 
-BigDecimal::BigDecimal(int precision_over_zero, int precision_under_zero) {
-    this->poz = precision_over_zero;
-    this->puz = precision_under_zero;
+BigDecimal::BigDecimal(int precision) {
     sign = true;
-    aoz = new short int[precision_over_zero];
-    auz = new short int[precision_under_zero];
+    poz = 100;
+    aoz = new short[poz];
     for (int i = 0; i < poz; ++i) {
         aoz[i] = 0;
     }
+    puz = precision;
+    auz = new short[puz];
     for (int i = 0; i < puz; ++i) {
-        auz[i] = 0;
+        aoz[i] = 0;
     }
 }
 
-BigDecimal::BigDecimal(int precision_over_zero, int precision_under_zero, int dot_index, int sign, int array_size,
-                       const short init_array[]) {
-    // Only use if you know what you are doing, because I certainly don't
-    // Primarily used for debugging
+BigDecimal::BigDecimal(int precision_over_zero, int precision_under_zero) {
+    sign = true;
     poz = precision_over_zero;
+    aoz = new short[poz];
+    for (int i = 0; i < poz; ++i) {
+        aoz[i] = 0;
+    }
     puz = precision_under_zero;
-    this->sign = sign;
+    auz = new short[puz];
+    for (int i = 0; i < puz; ++i) {
+        aoz[i] = 0;
+    }
+}
+
+BigDecimal::BigDecimal(const BigDecimal &to_copy) {
+    sign = to_copy.sign;
+    poz = to_copy.poz;
+    puz = to_copy.puz;
     aoz = new short[poz];
     auz = new short[puz];
-
-    for (int i = 0; i < poz; ++i) {
-        aoz[i] = 0;
-    }
-    for (int i = 0; i < puz; ++i) {
-        auz[i] = 0;
-    }
-
-    for (int i = 0; i < dot_index; ++i) {
-        aoz[i] = init_array[dot_index - 1 - i];
-    }
-    for (int i = 0; i < array_size - dot_index; ++i) {
-        auz[i] = init_array[dot_index + i];
-    }
-    relocate();
+    *aoz = *to_copy.aoz;
+    *auz = *to_copy.auz;
 }
 
-BigDecimal::BigDecimal(const BigDecimal &old) {
-    poz = old.poz;
-    puz = old.puz;
-    aoz = new short[old.poz];
-    for (int i = 0; i < old.poz; ++i) {
-        aoz[i] = old.aoz[i];
-    }
-    auz = new short[old.puz];
-    for (int i = 0; i < old.puz; ++i) {
-        auz[i] = old.auz[i];
-    }
-    sign = old.sign;
-}
-
-BigDecimal &BigDecimal::operator=(const BigDecimal &old) {
-    if (&old == this)
+BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
+    if(this == &to_copy){
         return *this;
-    poz = old.poz;
-    puz = old.puz;
-    aoz = new short[old.poz];
-    for (int i = 0; i < old.poz; ++i) {
-        aoz[i] = old.aoz[i];
     }
-    auz = new short[old.puz];
-    for (int i = 0; i < old.puz; ++i) {
-        auz[i] = old.auz[i];
-    }
-    sign = old.sign;
+    sign = to_copy.sign;
+    poz = to_copy.poz;
+    puz = to_copy.puz;
+    aoz = new short[poz];
+    auz = new short[puz];
+    *aoz = *to_copy.aoz;
+    *auz = *to_copy.auz;
     return *this;
 }
 
@@ -108,8 +89,19 @@ void BigDecimal::relocate() {
     // Handle transfer problems
     if (transfer) {
         if (transfer > 0) {
-            std::cout << "Number went over the storing limit" << std::endl;
+            // If number outgrew the array raise the precision over zero
+            auto *temp = new short [poz];
+            *temp = *aoz;
+            aoz = new short[poz + 100];
+            *aoz = *temp;
+            for (int i = 0; i < 100; ++i) {
+                aoz[poz + i] = 0;
+            }
+            aoz[poz] = transfer;
+            relocate();
         } else {
+            // If number went under Zero flip it around and change sign
+            // TODO: Maybe look if this can be simplified
             BigDecimal subtract_value(poz + 1, puz);
             subtract_value.aoz[poz] = 1;
             bool old_sign = sign;
@@ -879,3 +871,4 @@ bool BigDecimal::unequals(const BigDecimal &compare) const {
 bool BigDecimal::operator!=(const BigDecimal &compare) const {
     return unequals(compare);
 }
+

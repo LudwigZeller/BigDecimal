@@ -19,17 +19,15 @@ private:
     int poz;
     int puz;
 
-    void relocate();
+    BigDecimal(int precision_over_zero, int precision_under_zero);
 
+    void relocate();
 
 public:
 
-    BigDecimal(int precision_over_zero, int precision_under_zero);
-
-    BigDecimal(int precision_over_zero, int precision_under_zero, int dot_index, int sign, int array_size,
-               const short init_array[]);
-    BigDecimal(const BigDecimal&);
-    BigDecimal& operator=(const BigDecimal&);
+    BigDecimal(int precision);
+    BigDecimal(const BigDecimal &);
+    BigDecimal& operator=(const BigDecimal &);
 
     // Utility
     static BigDecimal invert(const BigDecimal&, int converging_limit = 100);
