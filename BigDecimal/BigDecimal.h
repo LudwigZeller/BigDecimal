@@ -10,6 +10,7 @@
 #ifndef BIGDECIMAL_BIGDECIMAL_H
 #define BIGDECIMAL_BIGDECIMAL_H
 #include <iostream>
+//#include <string>
 
 class BigDecimal {
 private:
@@ -23,16 +24,16 @@ private:
 
     void relocate();
 
-public:
 
-    BigDecimal(int precision);
+public:
+    void resize(bool under_zero, int precision);
+    explicit BigDecimal(int precision);
     BigDecimal(const BigDecimal &);
     BigDecimal& operator=(const BigDecimal &);
 
     // Utility
     static BigDecimal invert(const BigDecimal&, int converging_limit = 100);
     static BigDecimal sqrt(const BigDecimal&, int converging_limit = 100);
-    void resize(bool under_zero, int precision);
     void print() const;
 
 

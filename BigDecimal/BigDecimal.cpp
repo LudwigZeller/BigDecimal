@@ -8,28 +8,20 @@ BigDecimal::BigDecimal(int precision) {
     sign = true;
     poz = 100;
     aoz = new short[poz];
-    for (int i = 0; i < poz; ++i) {
-        aoz[i] = 0;
-    }
+    memset(aoz, 0, poz * sizeof(*aoz));
     puz = precision;
     auz = new short[puz];
-    for (int i = 0; i < puz; ++i) {
-        aoz[i] = 0;
-    }
+    memset(auz, 0, puz * sizeof(*auz));
 }
 
 BigDecimal::BigDecimal(int precision_over_zero, int precision_under_zero) {
     sign = true;
     poz = precision_over_zero;
-    aoz = new short[poz];
-    for (int i = 0; i < poz; ++i) {
-        aoz[i] = 0;
-    }
+    aoz = new short[precision_over_zero];
+    memset(aoz, 0, sizeof(*aoz) * poz);
     puz = precision_under_zero;
-    auz = new short[puz];
-    for (int i = 0; i < puz; ++i) {
-        aoz[i] = 0;
-    }
+    auz = new short[precision_under_zero];
+    memset(auz, 0, sizeof(*auz) * puz);
 }
 
 BigDecimal::BigDecimal(const BigDecimal &to_copy) {
@@ -38,12 +30,13 @@ BigDecimal::BigDecimal(const BigDecimal &to_copy) {
     puz = to_copy.puz;
     aoz = new short[poz];
     auz = new short[puz];
-    *aoz = *to_copy.aoz;
-    *auz = *to_copy.auz;
+
+    memcpy(aoz, to_copy.aoz, sizeof(*aoz) * poz);
+    memcpy(auz, to_copy.auz, sizeof(*auz) * puz);
 }
 
 BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
-    if(this == &to_copy){
+    if (this == &to_copy) {
         return *this;
     }
     sign = to_copy.sign;
@@ -51,8 +44,8 @@ BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
     puz = to_copy.puz;
     aoz = new short[poz];
     auz = new short[puz];
-    *aoz = *to_copy.aoz;
-    *auz = *to_copy.auz;
+    memcpy(aoz, to_copy.aoz, sizeof(*to_copy.aoz) * to_copy.poz);
+    memcpy(auz, to_copy.auz, sizeof(*to_copy.auz) * to_copy.puz);
     return *this;
 }
 
@@ -89,16 +82,21 @@ void BigDecimal::relocate() {
     // Handle transfer problems
     if (transfer) {
         if (transfer > 0) {
+            // TODO: Test if this works
             // If number outgrew the array raise the precision over zero
-            auto *temp = new short [poz];
-            *temp = *aoz;
-            aoz = new short[poz + 100];
-            *aoz = *temp;
-            for (int i = 0; i < 100; ++i) {
-                aoz[poz + i] = 0;
-            }
+            memcpy(aoz, aoz, sizeof(*aoz) * (poz + 100));
+            memset(aoz + poz, 0, sizeof(*aoz) *100);
             aoz[poz] = transfer;
+            poz += 100;
             relocate();
+//            auto *temp = new short[poz];
+//            *temp = *aoz;
+//            aoz = new short[poz + 100];
+//            *aoz = *temp;
+//            for (int i = 0; i < 100; ++i) {
+//                aoz[poz + i] = 0;
+//            }
+//            aoz[poz] = transfer;
         } else {
             // If number went under Zero flip it around and change sign
             // TODO: Maybe look if this can be simplified
@@ -265,33 +263,15 @@ BigDecimal BigDecimal::sqrt(const BigDecimal &base, int converging_limit) {
 //Resize
 void BigDecimal::resize(bool under_zero, int precision) {
     if (under_zero) {
-        auto *temp_array = new short[precision];
-        for (int i = 0; i < precision; ++i) {
-            temp_array[i] = auz[i];
-        }
-        auz = new short[precision];
-        for (int i = 0; i < (puz > precision ? precision : puz); ++i) {
-            auz[i] = temp_array[i];
-        }
+        memcpy(auz, auz, sizeof(*auz) * precision);
         if (precision > puz) {
-            for (int i = puz; i < precision; ++i) {
-                auz[i] = 0;
-            }
+            memset((auz + puz), 0, sizeof(*auz) * (precision - puz));
         }
         puz = precision;
     } else {
-        auto *temp_array = new short[precision];
-        for (int i = 0; i < precision; ++i) {
-            temp_array[i] = aoz[i];
-        }
-        aoz = new short[precision];
-        for (int i = 0; i < (poz > precision ? precision : poz); ++i) {
-            aoz[i] = temp_array[i];
-        }
+        memcpy(aoz, aoz, sizeof(*aoz) * precision);
         if (precision > poz) {
-            for (int i = poz; i < precision; ++i) {
-                aoz[i] = 0;
-            }
+            memset((aoz + poz), 0, sizeof(*aoz) * (precision - poz));
         }
         poz = precision;
     }
@@ -299,12 +279,29 @@ void BigDecimal::resize(bool under_zero, int precision) {
 
 // Print
 void BigDecimal::print() const {
+    int o_index = 0;
+    int u_index = 0;
+
+    for (int i = poz - 1; i >= 0; --i) {
+        if (aoz[i]) {
+            o_index = i;
+            break;
+        }
+    }
+    for (int i = puz - 1; i >= 0; --i) {
+        if (auz[i]) {
+            u_index = i;
+            break;
+        }
+    }
+
     std::cout << (sign ? "+" : "-");
-    for (int i = poz - 1; i >= 0; i--) {
+
+    for (int i = o_index; i >= 0; i--) {
         std::cout << aoz[i];
     }
     std::cout << ".";
-    for (int i = 0; i <= puz - 1; i++) {
+    for (int i = 0; i <= u_index; i++) {
         std::cout << auz[i];
     }
     std::cout << std::endl;
