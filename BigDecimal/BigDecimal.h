@@ -2,6 +2,7 @@
 // Created by Ludwig Zeller on 09.11.2021.
 //
 
+
 // TODO: Clean up and rework
 // TODO: THE NEXT BIG STEP: DYNAMIC ARRAYS (000123.123000 -> 123.321)
 // TODO: MULTITHREADING

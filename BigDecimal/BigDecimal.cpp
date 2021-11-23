@@ -2,6 +2,7 @@
 // Created by Ludwig Zeller on 09.11.2021.
 //
 
+
 #include "BigDecimal.h"
 
 BigDecimal::BigDecimal(int precision_over_zero, int precision_under_zero) {

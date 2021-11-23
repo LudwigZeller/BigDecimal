@@ -4,6 +4,7 @@
 using namespace std;
 
 int main() {
+
     cout << endl;
 
     short arr[] = {1, 1, 1, 2, 3, 3, 6, 1, 1, 5, 3, 2, 1, 2, 3};
