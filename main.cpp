@@ -9,18 +9,29 @@ int main() {
 //    a = BigDecimal::invert(a);
 //    cout << a.isZero();
 
-    BigDecimal x(100);
-    x += 28;
-    BigDecimal::invert(x).print();
-    x.print();
+    BigDecimal a(100);
+    BigDecimal b(101,100);
+    b.aoz[100] = 1;
+    for (int i = 0; i < 100; ++i) {
+        a.aoz[i] = 9;
+    }
+    b.print();
+    a.print();
+    (b - a).print();
 
-
-
-    BigDecimal y(100);
-    y += 28;
-    y.resize(true, 110);
-    y = BigDecimal::invert(y);
-    y.print();
+//
+//    BigDecimal x(100);
+//    x += 28;
+//    BigDecimal::invert(x).print();
+//    x.print();
+//
+//
+//
+//    BigDecimal y(100);
+//    y += 28;
+//    y.resize(true, 110);
+//    y = BigDecimal::invert(y);
+//    y.print();
 
     /*cout << endl<<"Problems with newtons method:" << endl << "1/2 =" << endl;
 
