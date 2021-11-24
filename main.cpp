@@ -4,10 +4,17 @@
 using namespace std;
 
 int main() {
+//    BigDecimal a(100);
+//    a += 3;
+//    a = BigDecimal::invert(a);
+//    cout << a.isZero();
+
     BigDecimal x(100);
     x += 28;
     BigDecimal::invert(x).print();
     x.print();
+
+
 
     BigDecimal y(100);
     y += 28;

@@ -85,7 +85,7 @@ void BigDecimal::relocate() {
             // TODO: Test if this works
             // If number outgrew the array raise the precision over zero
             memcpy(aoz, aoz, sizeof(*aoz) * (poz + 100));
-            memset(aoz + poz, 0, sizeof(*aoz) *100);
+            memset(aoz + poz, 0, sizeof(*aoz) * 100);
             aoz[poz] = transfer;
             poz += 100;
             relocate();
@@ -104,6 +104,8 @@ void BigDecimal::relocate() {
             subtract_value.aoz[poz] = 1;
             bool old_sign = sign;
             sign = true;
+            subtract_value.print();
+            print();
             subtract_value -= *this;
             sign = old_sign;
             subtract_value.resize(false, poz);
@@ -646,6 +648,10 @@ void BigDecimal::operator/=(const BigDecimal &divisor) {
 bool BigDecimal::greaterThan(const BigDecimal &compare) const {
     // Returns True if this BigDecimal is bigger
     // In all other cases it returns false
+
+
+
+
     int here_index = poz; // Value that cannot be reached
     int compare_index = compare.poz;
 
@@ -850,15 +856,20 @@ bool BigDecimal::operator==(const BigDecimal &compare) const {
 }
 
 bool BigDecimal::isZero() const {
-    for (int i = 0; i < puz; ++i) {
-        if (auz[i])
-            return false;
-    }
-    for (int i = 0; i < poz; ++i) {
-        if (aoz[i])
-            return false;
-    }
+    if (std::any_of(aoz, aoz + poz, [](int i) { return i > 0; }))
+        return false;
+    if (std::any_of(aoz, aoz + poz, [](int i) { return i > 0; }))
+        return false;
     return true;
+//    for (int i = 0; i < puz; ++i) {
+//        if (auz[i])
+//            return false;
+//    }
+//    for (int i = 0; i < poz; ++i) {
+//        if (aoz[i])
+//            return false;
+//    }
+//    return true;
 }
 
 bool BigDecimal::unequals(const BigDecimal &compare) const {

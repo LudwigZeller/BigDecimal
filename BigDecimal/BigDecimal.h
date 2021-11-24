@@ -3,17 +3,26 @@
 //
 
 // TODO: Clean up and rework
+// TODO: Rework Equals functions with any_of, none_of
 // TODO: THE NEXT BIG STEP: DYNAMIC ARRAYS (000123.123000 -> 123.321)
+// TODO: More comparison compatibilities with int (also look if comparison with zero calls isZero())
+// TODO: All calculations taking shorts as input should take ints
+// TODO: Use first_of or find_first_of to calculate starting points faster
 // TODO: MULTITHREADING
 // TODO: SPEED UP VIA FOURIER TRANSFORMATION
 
 #ifndef BIGDECIMAL_BIGDECIMAL_H
 #define BIGDECIMAL_BIGDECIMAL_H
 #include <iostream>
-//#include <string>
+#include <algorithm> // Used for fast compare methods
 
 class BigDecimal {
 private:
+
+
+
+public:
+    /* To be private */
     bool sign;
     short *aoz;
     short *auz;
@@ -23,9 +32,7 @@ private:
     BigDecimal(int precision_over_zero, int precision_under_zero);
 
     void relocate();
-
-
-public:
+    /*               */
     void resize(bool under_zero, int precision);
     explicit BigDecimal(int precision);
     BigDecimal(const BigDecimal &);
