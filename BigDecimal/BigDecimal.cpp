@@ -53,7 +53,6 @@ BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
 // Relocate
 void BigDecimal::relocate() {
     short transfer = 0;
-    print();
     //Relocate under Zero
     for (int i = puz - 1; i >= 0; --i) {
         auz[i] = short(auz[i] + transfer);
@@ -80,7 +79,6 @@ void BigDecimal::relocate() {
             aoz[i] = short(aoz[i] + 10 * -transfer);
         }
     }
-    print();
     // Handle transfer problems
     if (transfer) {
         if (transfer > 0) {
@@ -427,7 +425,7 @@ BigDecimal BigDecimal::subtract(const BigDecimal &subtrahend) const {
     if (poz != subtrahend.poz) {
         if (poz > subtrahend.poz) {
             for (int i = subtrahend.poz; i < poz; ++i) {
-                return_val.aoz[i] = short(-aoz[i]);
+                return_val.aoz[i] = short(aoz[i]);
             }
         } else {
             for (int i = poz; i < subtrahend.poz; ++i) {
