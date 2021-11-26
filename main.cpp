@@ -6,9 +6,12 @@ using namespace std;
 int main() {
 
     BigDecimal y(1000);
-    y += 2;
-    y /= y;
     y.print();
+    y += 2;
+    y.print();
+    // TODO: Climbs exponentially, so test all basic operators and their effectivity
+    BigDecimal x = y / 4;
+    x.print();
 
 //    cout << endl<<"Problems with newtons method:" << endl << "1/2 =" << endl;
 //
