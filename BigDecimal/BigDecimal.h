@@ -2,13 +2,16 @@
 // Created by Ludwig Zeller on 09.11.2021.
 //
 
+// KISS - Keep it simple, stupid!
+// Also: If it was difficult to write it should be difficult to read!
+// On a serious node I am sorry for anyone trying to read my code
+
 // TODO: Clean up and rework
-// TODO: Rework Equals functions with any_of, none_of
+// TODO: Rework Equals functions with any_of, none_of, memcmp
 // TODO: All relocate calls should first be evaluated if they are necessary
 // TODO: THE NEXT BIG STEP: DYNAMIC ARRAYS (000123.123000 -> 123.321)
 // TODO: More comparison compatibilities with int (also look if comparison with zero calls isZero())
 // TODO: All calculations taking shorts as input should take ints
-// TODO: Use first_of or find_first_of to calculate starting points faster
 // TODO: MULTITHREADING
 // TODO: SPEED UP VIA FOURIER TRANSFORMATION
 

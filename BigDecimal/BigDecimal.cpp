@@ -296,22 +296,6 @@ void BigDecimal::resize(bool under_zero, int precision) {
 
 // Print
 void BigDecimal::print() const {
-    int o_index = 0;
-    int u_index = 0;
-
-    for (int i = poz - 1; i >= 0; --i) {
-        if (aoz[i]) {
-            o_index = i;
-            break;
-        }
-    }
-    for (int i = puz - 1; i >= 0; --i) {
-        if (auz[i]) {
-            u_index = i;
-            break;
-        }
-    }
-
     std::cout << (sign ? "+" : "-");
 
     for (int i = range.oz; i >= 0; i--) {
@@ -322,17 +306,6 @@ void BigDecimal::print() const {
         std::cout << auz[i];
     }
     std::cout << std::endl;
-
-//    std::cout << (sign ? "+" : "-");
-//
-//    for (int i = range.oz; i >= 0; i--) {
-//        std::cout << aoz[i];
-//    }
-//    std::cout << ".";
-//    for (int i = 0; i <= range.uz; i++) {
-//        std::cout << auz[i];
-//    }
-//    std::cout << std::endl;
 }
 
 // Calculation Functions
