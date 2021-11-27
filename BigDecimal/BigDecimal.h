@@ -14,12 +14,12 @@
 
 #ifndef BIGDECIMAL_BIGDECIMAL_H
 #define BIGDECIMAL_BIGDECIMAL_H
+
 #include <iostream>
 #include <algorithm> // Used for fast compare methods
 
 class BigDecimal {
 private:
-
 
 
 public:
@@ -29,72 +29,109 @@ public:
     short *auz;
     int poz;
     int puz;
+    struct RANGE {
+        // Saves the highest index and lowest index
+        int oz = 0;
+        int uz = 0;
+    } range;
+
 
     BigDecimal(int precision_over_zero, int precision_under_zero);
 
     void relocate();
+
     /*               */
     void resize(bool under_zero, int precision);
+
     explicit BigDecimal(int precision);
+
     BigDecimal(const BigDecimal &);
-    BigDecimal& operator=(const BigDecimal &);
+
+    BigDecimal &operator=(const BigDecimal &);
 
     // Utility
-    static BigDecimal invert(const BigDecimal&, int converging_limit = 100);
-    static BigDecimal sqrt(const BigDecimal&, int converging_limit = 100);
+    static BigDecimal invert(const BigDecimal &, int converging_limit = 100);
+
+    static BigDecimal sqrt(const BigDecimal &, int converging_limit = 100);
+
     void print() const;
 
 
     // Calculation Functions
     // Add
     BigDecimal add(short addend) const;
-    BigDecimal add(const BigDecimal& addend) const;
+
+    BigDecimal add(const BigDecimal &addend) const;
+
     BigDecimal operator+(short addend) const;
-    BigDecimal operator+(const BigDecimal& addend) const;
+
+    BigDecimal operator+(const BigDecimal &addend) const;
+
     void operator+=(short addend);
-    void operator+=(const BigDecimal& addend);
+
+    void operator+=(const BigDecimal &addend);
 
     // Subtract
     BigDecimal subtract(short subtrahend) const;
-    BigDecimal subtract(const BigDecimal& subtrahend) const;
+
+    BigDecimal subtract(const BigDecimal &subtrahend) const;
+
     BigDecimal operator-(short) const;
-    BigDecimal operator-(const BigDecimal&) const;
+
+    BigDecimal operator-(const BigDecimal &) const;
+
     void operator-=(short);
-    void operator-=(const BigDecimal&);
+
+    void operator-=(const BigDecimal &);
 
     // Multiply
     BigDecimal multiply(short factor) const;
-    BigDecimal multiply(const BigDecimal& factor) const;
+
+    BigDecimal multiply(const BigDecimal &factor) const;
+
     BigDecimal operator*(short) const;
-    BigDecimal operator*(const BigDecimal&) const;
+
+    BigDecimal operator*(const BigDecimal &) const;
+
     void operator*=(short);
-    void operator*=(const BigDecimal&);
+
+    void operator*=(const BigDecimal &);
 
     // Divide
     BigDecimal divide(short divisor) const;
-    BigDecimal divide(const BigDecimal& divisor) const;
+
+    BigDecimal divide(const BigDecimal &divisor) const;
+
     BigDecimal operator/(short) const;
-    BigDecimal operator/(const BigDecimal&) const;
+
+    BigDecimal operator/(const BigDecimal &) const;
+
     void operator/=(short);
-    void operator/=(const BigDecimal&);
+
+    void operator/=(const BigDecimal &);
 
     // Compare Functions
     // Greater Than
-    bool greaterThan(const BigDecimal& compare) const;
-    bool operator>(const BigDecimal&) const;
+    bool greaterThan(const BigDecimal &compare) const;
+
+    bool operator>(const BigDecimal &) const;
 
     // Smaller Than
-    bool smallerThan(const BigDecimal& compare) const;
-    bool operator<(const BigDecimal&) const;
+    bool smallerThan(const BigDecimal &compare) const;
+
+    bool operator<(const BigDecimal &) const;
 
     // Equals
-    bool equals(const BigDecimal& compare) const;
-    bool operator==(const BigDecimal&) const;
+    bool equals(const BigDecimal &compare) const;
+
+    bool operator==(const BigDecimal &) const;
+
     bool isZero() const;
 
     // Unequal
-    bool unequals(const BigDecimal& compare) const;
-    bool operator!=(const BigDecimal& compare) const;
+    bool unequals(const BigDecimal &compare) const;
+
+    bool operator!=(const BigDecimal &compare) const;
 };
 
 

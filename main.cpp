@@ -1,16 +1,21 @@
 #include <iostream>
 #include "BigDecimal/BigDecimal.h"
-
-using namespace std;
+//using namespace std;
 
 int main() {
 
     BigDecimal y(1000);
+    y += 21232;
     y.print();
-    y += 2;
-    y.print();
+    BigDecimal z(104);
+    z += 31533;
+    for (int i = 0; i < 10; ++i) {
+        z.auz[i] = i;
+    }
+    z.print();
     // TODO: Climbs exponentially, so test all basic operators and their effectivity
-    BigDecimal x = y / 4;
+    BigDecimal x = y * z;
+    //BigDecimal x = y / 4;
     x.print();
 
 //    cout << endl<<"Problems with newtons method:" << endl << "1/2 =" << endl;

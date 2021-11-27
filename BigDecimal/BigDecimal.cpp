@@ -30,9 +30,9 @@ BigDecimal::BigDecimal(const BigDecimal &to_copy) {
     puz = to_copy.puz;
     aoz = new short[poz];
     auz = new short[puz];
-
     memcpy(aoz, to_copy.aoz, sizeof(*aoz) * poz);
     memcpy(auz, to_copy.auz, sizeof(*auz) * puz);
+    range = to_copy.range;
 }
 
 BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
@@ -46,6 +46,7 @@ BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
     auz = new short[puz];
     memcpy(aoz, to_copy.aoz, sizeof(*to_copy.aoz) * to_copy.poz);
     memcpy(auz, to_copy.auz, sizeof(*to_copy.auz) * to_copy.puz);
+    range = to_copy.range;
     return *this;
 }
 
@@ -109,6 +110,22 @@ void BigDecimal::relocate() {
             subtract_value.resize(false, poz);
             *this = subtract_value;
             sign = !old_sign;
+        }
+    }
+
+    // Update Range
+    range.oz = 0;
+    range.uz = 0;
+    for (int i = poz  - 1; i >= 0; --i) {
+        if(aoz[i]){
+            range.oz = i;
+            break;
+        }
+    }
+    for (int i = puz  - 1; i >= 0; --i) {
+        if(auz[i]){
+            range.uz = i;
+            break;
         }
     }
 }
@@ -297,14 +314,25 @@ void BigDecimal::print() const {
 
     std::cout << (sign ? "+" : "-");
 
-    for (int i = o_index; i >= 0; i--) {
+    for (int i = range.oz; i >= 0; i--) {
         std::cout << aoz[i];
     }
     std::cout << ".";
-    for (int i = 0; i <= u_index; i++) {
+    for (int i = 0; i <= range.uz; i++) {
         std::cout << auz[i];
     }
     std::cout << std::endl;
+
+//    std::cout << (sign ? "+" : "-");
+//
+//    for (int i = range.oz; i >= 0; i--) {
+//        std::cout << aoz[i];
+//    }
+//    std::cout << ".";
+//    for (int i = 0; i <= range.uz; i++) {
+//        std::cout << auz[i];
+//    }
+//    std::cout << std::endl;
 }
 
 // Calculation Functions
@@ -495,7 +523,7 @@ BigDecimal BigDecimal::multiply(short factor) const {
 
 BigDecimal BigDecimal::multiply(const BigDecimal &factor) const {
     if (factor.isZero() || isZero())
-        return {poz, puz};
+        return {100, 100};
 
 
     int here_highest_index = 0;
