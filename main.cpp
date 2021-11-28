@@ -12,9 +12,10 @@ int main() {
     for (int i = 0; i < 10; ++i) {
         z.auz[i] = i;
     }
+    z.relocate();
     z.print();
-    // TODO: Climbs exponentially, so test all basic operators and their effectivity
     BigDecimal x = y * z;
+    // TODO: Climbs exponentially, so test all basic operators and their effectivity
     //BigDecimal x = y / 4;
     x.print();
 
