@@ -9,7 +9,7 @@ int main() {
     y.print();
     BigDecimal z(104);
     z += 31533;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 100; ++i) {
         z.auz[i] = i;
     }
     z.relocate();

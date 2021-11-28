@@ -514,42 +514,11 @@ BigDecimal BigDecimal::multiply(int factor) const {
 
 BigDecimal BigDecimal::multiply(const BigDecimal &factor) const {
     if (factor.isZero() || isZero())
-        return {100, 100};
+        return {1, 1};
 
-
-    int here_highest_index = 0;
-    int here_lowest_index = 0;
-    for (int i = poz - 1; i >= 0; --i) {
-        if (aoz[i]) {
-            here_highest_index = i;
-            break;
-        }
-    }
-    for (int i = puz - 1; i >= 0; --i) {
-        if (auz[i]) {
-            here_lowest_index = i;
-            break;
-        }
-    }
-
-    int there_highest_index = 0;
-    int there_lowest_index = 0;
-    for (int i = factor.poz - 1; i >= 0; --i) {
-        if (factor.aoz[i]) {
-            there_highest_index = i + 3;
-            break;
-        }
-    }
-    for (int i = factor.puz - 1; i >= 0; --i) {
-        if (factor.auz[i]) {
-            there_lowest_index = i + 3;
-            break;
-        }
-    }
-
-    int min_poz = 5 + 2 * (here_highest_index > there_highest_index ? here_highest_index : there_highest_index);
+    int min_poz = 5 + 2 * (range.oz > factor.range.oz ? range.oz : factor.range.oz);
     int return_poz = min_poz > (poz > factor.poz ? poz : factor.poz) ? min_poz : (poz > factor.poz ? poz : factor.poz);
-    int min_puz = 5 + 2 * (here_lowest_index > there_lowest_index ? here_lowest_index : there_lowest_index);
+    int min_puz = 5 + 2 * (range.uz > factor.range.uz ? range.uz : factor.range.uz);
     int return_puz = min_puz > (puz > factor.puz ? puz : factor.puz) ? min_puz : (puz > factor.puz ? puz : factor.puz);
     BigDecimal return_value(return_poz, return_puz);
 
