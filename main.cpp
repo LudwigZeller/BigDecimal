@@ -3,7 +3,7 @@
 //using namespace std;
 
 int main() {
-
+    std::cout << pow(10, 3) << std::endl;
     BigDecimal y(1000);
     y += 21232;
     y.print();

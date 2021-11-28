@@ -116,14 +116,14 @@ void BigDecimal::relocate() {
     // Update Range
     range.oz = 0;
     range.uz = 0;
-    for (int i = poz  - 1; i >= 0; --i) {
-        if(aoz[i]){
+    for (int i = poz - 1; i >= 0; --i) {
+        if (aoz[i]) {
             range.oz = i;
             break;
         }
     }
-    for (int i = puz  - 1; i >= 0; --i) {
-        if(auz[i]){
+    for (int i = puz - 1; i >= 0; --i) {
+        if (auz[i]) {
             range.uz = i;
             break;
         }
@@ -310,12 +310,18 @@ void BigDecimal::print() const {
 
 // Calculation Functions
 // Add
-BigDecimal BigDecimal::add(short addend) const {
+BigDecimal BigDecimal::add(int addend) const {
     if (!sign) {
         return subtract(addend);
     }
     BigDecimal return_value = *this;
-    return_value.aoz[0] = short(return_value.aoz[0] + addend);
+    int i = 0;
+    while (true) {
+        return_value.aoz[i] = short(return_value.aoz[i] + int(addend / pow(10, i)) % 10);
+        i++;
+        if (!bool(addend / pow(10, i)))
+            break;
+    }
     return_value.relocate();
     if (return_value.isZero())
         return_value.sign = true;
@@ -373,7 +379,7 @@ BigDecimal BigDecimal::add(const BigDecimal &addend) const {
     return return_val;
 }
 
-BigDecimal BigDecimal::operator+(short addend) const {
+BigDecimal BigDecimal::operator+(int addend) const {
     return add(addend);
 }
 
@@ -381,7 +387,7 @@ BigDecimal BigDecimal::operator+(const BigDecimal &addend) const {
     return add(addend);
 }
 
-void BigDecimal::operator+=(short addend) {
+void BigDecimal::operator+=(int addend) {
     *this = add(addend);
 }
 
@@ -390,9 +396,21 @@ void BigDecimal::operator+=(const BigDecimal &addend) {
 }
 
 // Subtract
-BigDecimal BigDecimal::subtract(short subtrahend) const {
+BigDecimal BigDecimal::subtract(int subtrahend) const {
     BigDecimal return_value = *this;
-    return_value.aoz[0] = short(return_value.aoz[0] - subtrahend);
+    if (!sign) {
+        return_value.sign = true;
+        return_value = add(subtrahend);
+        return_value.sign = false;
+        return return_value;
+    }
+    int i = 0;
+    while (true) {
+        return_value.aoz[i] = short(return_value.aoz[i] - int(subtrahend / pow(10, i)) % 10);
+        i++;
+        if (!bool(subtrahend / pow(10, i)))
+            break;
+    }
     return_value.relocate();
     if (return_value.isZero())
         return_value.sign = true;
@@ -453,7 +471,7 @@ BigDecimal BigDecimal::subtract(const BigDecimal &subtrahend) const {
     return return_val;
 }
 
-BigDecimal BigDecimal::operator-(short subtrahend) const {
+BigDecimal BigDecimal::operator-(int subtrahend) const {
     return subtract(subtrahend);
 }
 
@@ -461,7 +479,7 @@ BigDecimal BigDecimal::operator-(const BigDecimal &subtrahend) const {
     return subtract(subtrahend);
 }
 
-void BigDecimal::operator-=(short subtrahend) {
+void BigDecimal::operator-=(int subtrahend) {
     *this = subtract(subtrahend);
 }
 
@@ -470,9 +488,9 @@ void BigDecimal::operator-=(const BigDecimal &subtrahend) {
 }
 
 // Multiply
-BigDecimal BigDecimal::multiply(short factor) const {
+BigDecimal BigDecimal::multiply(int factor) const {
     if (factor == 0)
-        return {poz, puz};
+        return {1, 1};
 
     BigDecimal return_value = *this;
     if (factor < 0) {
@@ -593,7 +611,7 @@ BigDecimal BigDecimal::multiply(const BigDecimal &factor) const {
     return return_value;
 }
 
-BigDecimal BigDecimal::operator*(short factor) const {
+BigDecimal BigDecimal::operator*(int factor) const {
     return multiply(factor);
 }
 
@@ -601,7 +619,7 @@ BigDecimal BigDecimal::operator*(const BigDecimal &factor) const {
     return multiply(factor);
 }
 
-void BigDecimal::operator*=(short factor) {
+void BigDecimal::operator*=(int factor) {
     *this = multiply(factor);
 }
 
@@ -610,7 +628,7 @@ void BigDecimal::operator*=(const BigDecimal &factor) {
 }
 
 // Divide
-BigDecimal BigDecimal::divide(short divisor) const {
+BigDecimal BigDecimal::divide(int divisor) const {
     BigDecimal _divisor(5, 5);
     _divisor += divisor;
     return multiply(invert(_divisor));
@@ -626,7 +644,7 @@ BigDecimal BigDecimal::divide(const BigDecimal &divisor) const {
     return return_value;
 }
 
-BigDecimal BigDecimal::operator/(short divisor) const {
+BigDecimal BigDecimal::operator/(int divisor) const {
     return divide(divisor);
 }
 
@@ -634,7 +652,7 @@ BigDecimal BigDecimal::operator/(const BigDecimal &divisor) const {
     return divide(divisor);
 }
 
-void BigDecimal::operator/=(short divisor) {
+void BigDecimal::operator/=(int divisor) {
     *this = divide(divisor);
 }
 

@@ -62,54 +62,54 @@ public:
 
     // Calculation Functions
     // Add
-    BigDecimal add(short addend) const;
+    BigDecimal add(int addend) const;
 
     BigDecimal add(const BigDecimal &addend) const;
 
-    BigDecimal operator+(short addend) const;
+    BigDecimal operator+(int addend) const;
 
     BigDecimal operator+(const BigDecimal &addend) const;
 
-    void operator+=(short addend);
+    void operator+=(int addend);
 
     void operator+=(const BigDecimal &addend);
 
     // Subtract
-    BigDecimal subtract(short subtrahend) const;
+    BigDecimal subtract(int subtrahend) const;
 
     BigDecimal subtract(const BigDecimal &subtrahend) const;
 
-    BigDecimal operator-(short) const;
+    BigDecimal operator-(int) const;
 
     BigDecimal operator-(const BigDecimal &) const;
 
-    void operator-=(short);
+    void operator-=(int);
 
     void operator-=(const BigDecimal &);
 
     // Multiply
-    BigDecimal multiply(short factor) const;
+    BigDecimal multiply(int factor) const;
 
     BigDecimal multiply(const BigDecimal &factor) const;
 
-    BigDecimal operator*(short) const;
+    BigDecimal operator*(int) const;
 
     BigDecimal operator*(const BigDecimal &) const;
 
-    void operator*=(short);
+    void operator*=(int);
 
     void operator*=(const BigDecimal &);
 
     // Divide
-    BigDecimal divide(short divisor) const;
+    BigDecimal divide(int divisor) const;
 
     BigDecimal divide(const BigDecimal &divisor) const;
 
-    BigDecimal operator/(short) const;
+    BigDecimal operator/(int) const;
 
     BigDecimal operator/(const BigDecimal &) const;
 
-    void operator/=(short);
+    void operator/=(int);
 
     void operator/=(const BigDecimal &);
 
