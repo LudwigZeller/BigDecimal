@@ -138,8 +138,8 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
     int safety = 10;
 
     BigDecimal to_invert_copy = to_invert;
-    //to_invert_copy.resize(true, to_invert.puz + safety);
-    //to_invert_copy.resize(false, to_invert.poz + safety);
+    to_invert_copy.resize(true, to_invert.puz + safety);
+    to_invert_copy.resize(false, to_invert.poz + safety);
 
     BigDecimal approx(to_invert.range.uz + 1 + safety, to_invert.range.oz + 1 + safety);
     if (to_invert.range.oz) {
