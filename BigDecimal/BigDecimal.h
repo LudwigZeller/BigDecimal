@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <algorithm> // Used for fast compare methods
+#include <stdexcept>
 
 class BigDecimal {
 private:
@@ -41,13 +42,15 @@ public:
 
     BigDecimal(int precision_over_zero, int precision_under_zero);
     void relocate();
-
+    void update_range();
     /*               */
     // Constructor (Copy, Assignment, etc.)
     void resize(bool under_zero, int precision);
     explicit BigDecimal(int precision);
     BigDecimal(const BigDecimal &);
+    ~BigDecimal();
     BigDecimal &operator=(const BigDecimal &);
+
 
     // Utility
     static BigDecimal invert(const BigDecimal &, int converging_limit = 100);
