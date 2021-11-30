@@ -10,9 +10,7 @@
 // TODO: Rework multiply function
 // TODO: Rework Equals functions with any_of, none_of, memcmp
 // TODO: All relocate calls should first be evaluated if they are necessary
-// TODO: THE NEXT BIG STEP: DYNAMIC ARRAYS (000123.123000 -> 123.321)
 // TODO: More comparison compatibilities with int (also look if comparison with zero calls isZero())
-// TODO: All calculations taking shorts as input should take ints
 // TODO: MULTITHREADING
 // TODO: SPEED UP VIA FOURIER TRANSFORMATION
 
@@ -20,6 +18,9 @@
 #define BIGDECIMAL_BIGDECIMAL_H
 
 #include <iostream>
+#include <cmath>
+#include <cstring>
+//TODO: Debugging with algorithms results in assertion errors
 #include <algorithm> // Used for fast compare methods
 #include <stdexcept>
 
@@ -36,6 +37,8 @@ public:
     int puz;
     struct RANGE {
         // Saves the highest index and lowest index
+        // Why did I use a struct? Because I wanted to!
+        // It doesn't have much point here, but I have never actually used one, so I wanted to try it
         int oz = 0;
         int uz = 0;
     } range;
@@ -48,7 +51,7 @@ public:
     void resize(bool under_zero, int precision);
     explicit BigDecimal(int precision);
     BigDecimal(const BigDecimal &);
-    ~BigDecimal();
+    //~BigDecimal();
     BigDecimal &operator=(const BigDecimal &);
 
 

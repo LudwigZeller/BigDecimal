@@ -35,10 +35,10 @@ BigDecimal::BigDecimal(const BigDecimal &to_copy) {
     range = to_copy.range;
 }
 
-BigDecimal::~BigDecimal() {
-    delete[] aoz;
-    delete[] auz;
-}
+//BigDecimal::~BigDecimal() {
+//    delete[] aoz;
+//    delete[] auz;
+//}
 
 BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
     if (this == &to_copy) {
@@ -88,21 +88,20 @@ void BigDecimal::relocate() {
     // Handle transfer problems
     if (transfer) {
         if (transfer > 0) {
-            // TODO: Test if this works
             // If number outgrew the array raise the precision over zero
             resize(false, poz + 100);
-            aoz[poz] = transfer;
+            aoz[poz - 100] = transfer;
             relocate();
         } else {
             // If number went under Zero flip it around and change sign
             // TODO: Maybe look if this can be simplified
             BigDecimal subtract_value(poz + 1, puz);
             subtract_value.aoz[poz] = 1;
+            subtract_value.update_range();
+            update_range();
             bool old_sign = sign;
             sign = true;
             subtract_value -= *this;
-            sign = old_sign;
-            subtract_value.resize(false, poz);
             *this = subtract_value;
             sign = !old_sign;
         }
@@ -131,17 +130,16 @@ void BigDecimal::update_range() {
 
 // Invert
 BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit) {
-    if (to_invert.isZero()) {
+    if (to_invert.isZero())
         throw std::invalid_argument("Inverse of Zero is undefined");
-    }
+
 
     int safety = 10;
-
     BigDecimal to_invert_copy = to_invert;
     to_invert_copy.resize(true, to_invert.puz + safety);
     to_invert_copy.resize(false, to_invert.poz + safety);
 
-    BigDecimal approx(to_invert.range.uz + 1 + safety, to_invert.range.oz + 1 + safety);
+    BigDecimal approx(to_invert.range.oz + 1 + safety, to_invert.puz + safety);
     if (to_invert.range.oz) {
         approx.auz[to_invert.range.oz] = 1;
     } else {
@@ -156,6 +154,7 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
             approx.auz[to_invert.range.oz] = 1;
         }
     }
+    approx.update_range();
 
     BigDecimal check1(approx.poz, approx.puz);
     check1 += 1;
@@ -164,18 +163,18 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
     // Newton's Approximation
     // 1/y = x(n+1) = 2*x(n) - x(n)^2*y
     // x(0) = Approximately the inverse
-
     for (int i = 0; i < converging_limit; ++i) {
         if (check1 == check2)
             break;
         check1 = approx;
         approx = (approx * 2) - (to_invert_copy * (approx * approx));
         check2 = approx;
-        check1.resize(true, to_invert.puz);
-        check2.resize(true, to_invert.puz);
+        check1.resize(true, to_invert.puz + 2);
+        check2.resize(true, to_invert.puz + 2);
     }
     if (check1 != check2 && converging_limit == 100)
         std::cout << "Inverse hasn't converged" << std::endl;
+        //throw std::runtime_error("Inverse has not converged");
 //    while (check1 != check2) {
 //        check1 = approx;
 //        approx = (approx * 2) - ((approx * approx) * to_invert_copy);
@@ -309,7 +308,7 @@ BigDecimal BigDecimal::add(int addend) const {
     while (true) {
         return_value.aoz[i] = short(return_value.aoz[i] + int(addend / pow(10, i)) % 10);
         i++;
-        if (!bool(addend / pow(10, i)))
+        if (!int(addend / pow(10, i)))
             break;
     }
     return_value.relocate();
@@ -398,7 +397,7 @@ BigDecimal BigDecimal::subtract(int subtrahend) const {
     while (true) {
         return_value.aoz[i] = short(return_value.aoz[i] - int(subtrahend / pow(10, i)) % 10);
         i++;
-        if (!bool(subtrahend / pow(10, i)))
+        if (!int(subtrahend / pow(10, i)))
             break;
     }
     return_value.relocate();
@@ -422,37 +421,15 @@ BigDecimal BigDecimal::subtract(const BigDecimal &subtrahend) const {
         return add(temp);
     }
 
-    BigDecimal return_val((poz > subtrahend.poz ? poz : subtrahend.poz),
-                          (puz > subtrahend.puz ? puz : subtrahend.puz));
-    for (int i = 0; i < (poz < subtrahend.poz ? poz : subtrahend.poz); ++i) {
-        return_val.aoz[i] = short(aoz[i] - subtrahend.aoz[i]);
-    }
-    for (int i = 0; i < (puz < subtrahend.puz ? puz : subtrahend.puz); ++i) {
-        return_val.auz[i] = short(auz[i] - subtrahend.auz[i]);
-    }
+    BigDecimal return_val = *this;
+    return_val.resize(true, (range.uz > subtrahend.range.uz ? range.uz : subtrahend.range.uz) + 5);
+    return_val.resize(false, (range.oz > subtrahend.range.oz ? range.oz : subtrahend.range.oz) + 5);
 
-    if (poz != subtrahend.poz) {
-        if (poz > subtrahend.poz) {
-            for (int i = subtrahend.poz; i < poz; ++i) {
-                return_val.aoz[i] = short(aoz[i]);
-            }
-        } else {
-            for (int i = poz; i < subtrahend.poz; ++i) {
-                return_val.aoz[i] = short(-subtrahend.aoz[i]);
-            }
-        }
+    for (int i = 0; i <= subtrahend.range.oz; ++i) {
+        return_val.aoz[i] = short(return_val.aoz[i] - subtrahend.aoz[i]);
     }
-
-    if (puz != subtrahend.puz) {
-        if (puz > subtrahend.puz) {
-            for (int i = subtrahend.puz; i < puz; ++i) {
-                return_val.auz[i] = short(-auz[i]);
-            }
-        } else {
-            for (int i = puz; i < subtrahend.puz; ++i) {
-                return_val.auz[i] = short(-subtrahend.auz[i]);
-            }
-        }
+    for (int i = 0; i <= subtrahend.range.uz; ++i) {
+        return_val.auz[i] = short(return_val.auz[i] - subtrahend.auz[i]);
     }
 
     return_val.relocate();
@@ -575,17 +552,19 @@ void BigDecimal::operator*=(const BigDecimal &factor) {
 
 // Divide
 BigDecimal BigDecimal::divide(int divisor) const {
-    BigDecimal divisor_bd(20, 20);
-    divisor_bd += divisor;
-    return multiply(invert(divisor_bd));
+    BigDecimal return_val(20, 20);
+    return_val += divisor;
+    return_val = invert(return_val);
+    return_val = multiply(return_val);
+    return_val.resize(true, puz);
+    return return_val;
 }
 
 BigDecimal BigDecimal::divide(const BigDecimal &divisor) const {
-    BigDecimal divisor_copy = divisor;
-    divisor_copy.resize(false, divisor.poz + 10);
-    divisor_copy.resize(true, divisor.puz + 10);
-    BigDecimal return_value = multiply(invert(divisor_copy));
-    return_value.resize(false, (poz > divisor.poz ? poz : divisor.poz));
+    BigDecimal return_value = divisor;
+    return_value.resize(true, (divisor.puz > puz ? divisor.puz : puz) + 10);
+    return_value = invert(return_value);
+    return_value = multiply(return_value);
     return_value.resize(true, (puz > divisor.puz ? puz : divisor.puz));
     return return_value;
 }
@@ -819,20 +798,20 @@ bool BigDecimal::operator==(const BigDecimal &compare) const {
 }
 
 bool BigDecimal::isZero() const {
-    if (std::any_of(aoz, aoz + range.oz + 1, [](int i) { return i > 0; }))
-        return false;
-    if (std::any_of(auz, auz + range.uz + 1, [](int i) { return i > 0; }))
-        return false;
-    return true;
-//    for (int i = 0; i < puz; ++i) {
-//        if (auz[i])
-//            return false;
-//    }
-//    for (int i = 0; i < poz; ++i) {
-//        if (aoz[i])
-//            return false;
-//    }
+//    if (std::any_of(aoz, aoz + range.oz + 1, [](int i) { return i > 0; }))
+//        return false;
+//    if (std::any_of(auz, auz + range.uz + 1, [](int i) { return i > 0; }))
+//        return false;
 //    return true;
+    for (int i = 0; i < puz; ++i) {
+        if (auz[i])
+            return false;
+    }
+    for (int i = 0; i < poz; ++i) {
+        if (aoz[i])
+            return false;
+    }
+    return true;
 }
 
 bool BigDecimal::unequals(const BigDecimal &compare) const {
