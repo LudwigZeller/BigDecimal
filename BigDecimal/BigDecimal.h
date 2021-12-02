@@ -6,8 +6,7 @@
 // Also: If it was difficult to write it should be difficult to read!
 // On a serious node I am sorry for anyone trying to read my code
 
-// TODO: Clean up and rework
-// TODO: Rework multiply function
+// TODO: Think about solving and receiving a periodic number in division BSP: 60 / 3
 // TODO: Rework Equals functions with any_of, none_of, memcmp
 // TODO: All relocate calls should first be evaluated if they are necessary
 // TODO: More comparison compatibilities with int (also look if comparison with zero calls isZero())
@@ -46,6 +45,7 @@ public:
     BigDecimal(int precision_over_zero, int precision_under_zero);
     void relocate();
     void update_range();
+    void debug_print() const;
     /*               */
     // Constructor (Copy, Assignment, etc.)
     void resize(bool under_zero, int precision);

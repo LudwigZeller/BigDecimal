@@ -134,7 +134,7 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
         throw std::invalid_argument("Inverse of Zero is undefined");
 
 
-    int safety = 10;
+    int safety = 20;
     BigDecimal to_invert_copy = to_invert;
     to_invert_copy.resize(true, to_invert.puz + safety);
     to_invert_copy.resize(false, to_invert.poz + safety);
@@ -164,6 +164,7 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
     // 1/y = x(n+1) = 2*x(n) - x(n)^2*y
     // x(0) = Approximately the inverse
     for (int i = 0; i < converging_limit; ++i) {
+        approx.debug_print();
         if (check1 == check2)
             break;
         check1 = approx;
@@ -297,6 +298,19 @@ void BigDecimal::print() const {
     std::cout << std::endl;
 }
 
+// Debug Print
+void BigDecimal::debug_print() const{
+    std::cout << (sign ? "+" : "-");
+    for (int i = poz - 1; i >= 0; i--) {
+        std::cout << aoz[i];
+    }
+    std::cout << ".";
+    for (int i = 0; i <= puz - 1; i++) {
+        std::cout << auz[i];
+    }
+    std::cout << std::endl;
+}
+
 // Calculation Functions
 // Add
 BigDecimal BigDecimal::add(int addend) const {
@@ -411,7 +425,7 @@ BigDecimal BigDecimal::subtract(const BigDecimal &subtrahend) const {
     if (!sign && subtrahend.sign) {
         BigDecimal temp = *this;
         temp.sign = true;
-        temp += subtrahend;
+        temp = temp.add(subtrahend);
         temp.sign = false;
         return temp;
     }
@@ -422,7 +436,7 @@ BigDecimal BigDecimal::subtract(const BigDecimal &subtrahend) const {
     }
 
     BigDecimal return_val = *this;
-    return_val.resize(true, (range.uz > subtrahend.range.uz ? range.uz : subtrahend.range.uz) + 5);
+//    return_val.resize(true, (range.uz > subtrahend.range.uz ? range.uz : subtrahend.range.uz) + 5);
     return_val.resize(false, (range.oz > subtrahend.range.oz ? range.oz : subtrahend.range.oz) + 5);
 
     for (int i = 0; i <= subtrahend.range.oz; ++i) {
@@ -529,7 +543,9 @@ BigDecimal BigDecimal::multiply(const BigDecimal &factor) const {
         }
     }
 
+//    debug_print();
     return_value.resize(true, (puz > factor.puz ? puz : factor.puz));
+//    debug_print();
     return_value.relocate();
     return return_value;
 }
@@ -552,7 +568,7 @@ void BigDecimal::operator*=(const BigDecimal &factor) {
 
 // Divide
 BigDecimal BigDecimal::divide(int divisor) const {
-    BigDecimal return_val(20, 20);
+    BigDecimal return_val(20, puz + 20);
     return_val += divisor;
     return_val = invert(return_val);
     return_val = multiply(return_val);
