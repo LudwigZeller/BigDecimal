@@ -6,6 +6,7 @@
 // Also: If it was difficult to write it should be difficult to read!
 // On a serious node I am sorry for anyone trying to read my code
 
+// TODO: The bigger the number, the higher the chance of not converging and the higher the runtime
 // TODO: Think about solving and receiving a periodic number in division BSP: 60 / 3
 // TODO: Rework Equals functions with any_of, none_of, memcmp
 // TODO: All relocate calls should first be evaluated if they are necessary
@@ -19,16 +20,12 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
-//TODO: Debugging with algorithms results in assertion errors
 #include <algorithm> // Used for fast compare methods
 #include <stdexcept>
 
 class BigDecimal {
 private:
-
-
-public:
-    /* To be private */
+/* To be private */
     bool sign;
     short *aoz;
     short *auz;
@@ -47,11 +44,13 @@ public:
     void update_range();
     void debug_print() const;
     /*               */
+
+public:
+
     // Constructor (Copy, Assignment, etc.)
     void resize(bool under_zero, int precision);
     explicit BigDecimal(int precision);
     BigDecimal(const BigDecimal &);
-    //~BigDecimal();
     BigDecimal &operator=(const BigDecimal &);
 
 

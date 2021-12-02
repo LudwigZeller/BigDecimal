@@ -35,11 +35,6 @@ BigDecimal::BigDecimal(const BigDecimal &to_copy) {
     range = to_copy.range;
 }
 
-//BigDecimal::~BigDecimal() {
-//    delete[] aoz;
-//    delete[] auz;
-//}
-
 BigDecimal &BigDecimal::operator=(const BigDecimal &to_copy) {
     if (this == &to_copy) {
         return *this;
@@ -101,7 +96,7 @@ void BigDecimal::relocate() {
             update_range();
             bool old_sign = sign;
             sign = true;
-            subtract_value -= *this;
+            subtract_value = subtract_value.subtract(*this);
             *this = subtract_value;
             sign = !old_sign;
         }
@@ -164,7 +159,6 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
     // 1/y = x(n+1) = 2*x(n) - x(n)^2*y
     // x(0) = Approximately the inverse
     for (int i = 0; i < converging_limit; ++i) {
-        approx.debug_print();
         if (check1 == check2)
             break;
         check1 = approx;

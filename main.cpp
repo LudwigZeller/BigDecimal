@@ -12,12 +12,13 @@ int main() {
 
     cout << endl << "sqrt(2) =" << endl;
 
-    BigDecimal a(1000);
+    BigDecimal a(500);
     a += 2;
     BigDecimal::sqrt(a).print();
 
-    cout << endl << "Finished";
+    cout << endl << "The Problem still is that the bigger the number the bigger the runtime and the bigger the precision loss!" << endl;
 
+    cout << endl << "Finished";
     return 0;
 }
 
