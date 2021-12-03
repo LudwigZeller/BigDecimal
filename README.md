@@ -1,7 +1,10 @@
 # BigDecimal
+___
 <b>A C++ Class, designed to give the user the ability to calculate numbers to large precision</b>
 <h5></h5>
 <p>"main.cpp" includes a presentations of different features.</p>
+
+___
 <h3>Features:</h3>
 <ul>
 <li>Configurable precision under zero</li>
