@@ -169,7 +169,7 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
     }
     if (check1 != check2 && converging_limit == 100)
         std::cout << "Inverse hasn't converged" << std::endl;
-        //throw std::runtime_error("Inverse has not converged");
+    //throw std::runtime_error("Inverse has not converged");
 //    while (check1 != check2) {
 //        check1 = approx;
 //        approx = (approx * 2) - ((approx * approx) * to_invert_copy);
@@ -293,7 +293,7 @@ void BigDecimal::print() const {
 }
 
 // Debug Print
-void BigDecimal::debug_print() const{
+void BigDecimal::debug_print() const {
     std::cout << (sign ? "+" : "-");
     for (int i = poz - 1; i >= 0; i--) {
         std::cout << aoz[i];
@@ -303,6 +303,20 @@ void BigDecimal::debug_print() const{
         std::cout << auz[i];
     }
     std::cout << std::endl;
+}
+
+// To String
+std::string BigDecimal::toString() const {
+    std::string str(range.oz + range.uz + 4, '0');
+    str[0] = sign ? '+' : '-';
+    for (int i = range.oz; i >= 0; --i) {
+        str[range.oz - i + 1] = char (aoz[i] + '0');
+    }
+    str[range.oz + 2] = '.';
+    for (int i = 0; i <= range.uz; ++i) {
+        str[i + range.oz + 3] = char (auz[i] + '0');
+    }
+    return str;
 }
 
 // Calculation Functions
@@ -600,10 +614,6 @@ void BigDecimal::operator/=(const BigDecimal &divisor) {
 bool BigDecimal::greaterThan(const BigDecimal &compare) const {
     // Returns True if this BigDecimal is bigger
     // In all other cases it returns false
-
-
-
-
     int here_index = poz; // Value that cannot be reached
     int compare_index = compare.poz;
 
