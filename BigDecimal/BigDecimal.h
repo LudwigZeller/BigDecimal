@@ -22,6 +22,7 @@
 #include <cstring>
 #include <algorithm> // Used for fast compare methods
 #include <stdexcept>
+#include <string>
 
 class BigDecimal {
 private:
@@ -58,6 +59,7 @@ public:
     static BigDecimal invert(const BigDecimal &, int converging_limit = 100);
     static BigDecimal sqrt(const BigDecimal &, int converging_limit = 100);
     void print() const;
+    std::string toString() const;
 
 
     // Calculation Functions
