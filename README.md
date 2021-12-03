@@ -8,5 +8,6 @@
 <li>Common calculation operators are supported: +, +=, -, -=, *, *=, /, /=</li>
 <li>Common comparison operators are supported: >, >=, <, <=, ==, != </li>
 <li>Some often used calculations are supported: sqrt(), invert()</li>
+<li>Common utility functions are supported: print(), toString()</li>
 </ul>
 <h4>This package is currently being worked on and updated on a frequent basis</h4>
