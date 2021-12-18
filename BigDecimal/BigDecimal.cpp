@@ -206,7 +206,8 @@ BigDecimal BigDecimal::sqrt(const BigDecimal &base, int converging_limit) {
 
 
     BigDecimal approx(base.poz,
-                      (std::abs(highest_index) + 10) > (base.puz + 10) ? (std::abs(highest_index) + 10) : (base.puz + 10));
+                      (std::abs(highest_index) + 10) > (base.puz + 10) ? (std::abs(highest_index) + 10) : (base.puz +
+                                                                                                           10));
 
     if (highest_index >= 0) {
         approx.aoz[int(highest_index / 2)] = 1;
@@ -287,7 +288,8 @@ void BigDecimal::resize(bool under_zero, int precision) {
 
 // Print
 void BigDecimal::print() const {
-    std::cout << (sign ? "+" : "-");
+    if (!sign)
+        std::cout << "-";
 
     for (int i = range.oz; i >= 0; i--) {
         std::cout << aoz[i];
@@ -315,7 +317,8 @@ void BigDecimal::debug_print() const {
 // To String
 std::string BigDecimal::toString() const {
     std::string str(range.oz + range.uz + 4, '0');
-    str[0] = sign ? '+' : '-';
+    if (!sign)
+        str[0] = '-';
     for (int i = range.oz; i >= 0; --i) {
         str[range.oz - i + 1] = char(aoz[i] + '0');
     }
