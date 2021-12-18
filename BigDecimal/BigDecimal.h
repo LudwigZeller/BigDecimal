@@ -26,7 +26,7 @@
 
 class BigDecimal {
 private:
-/* To be private */
+    /* To be private */
     bool sign;
     short *aoz;
     short *auz;
@@ -56,8 +56,9 @@ public:
 
 
     // Utility
-    static BigDecimal invert(const BigDecimal &, int converging_limit = 100);
+    static BigDecimal invert(const BigDecimal &, int converging_limit = 250);
     static BigDecimal sqrt(const BigDecimal &, int converging_limit = 100);
+    static BigDecimal abs_bd(const BigDecimal & );
     void print() const;
     std::string toString() const;
 

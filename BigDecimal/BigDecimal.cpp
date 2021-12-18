@@ -186,7 +186,7 @@ BigDecimal BigDecimal::invert(const BigDecimal &to_invert, int converging_limit)
 BigDecimal BigDecimal::sqrt(const BigDecimal &base, int converging_limit) {
     BigDecimal base_copy = base; // To change to a positive sign
     base_copy.sign = true;
-    int highest_index = base.poz; // Unreachable value
+    int highest_index = base_copy.poz; // Unreachable value
 
     for (int i = base.poz - 1; i >= 0; --i) {
         if (base.aoz[i]) {
@@ -206,12 +206,12 @@ BigDecimal BigDecimal::sqrt(const BigDecimal &base, int converging_limit) {
 
 
     BigDecimal approx(base.poz,
-                      (abs(highest_index) + 10) > (base.puz + 10) ? (abs(highest_index) + 10) : (base.puz + 10));
+                      (std::abs(highest_index) + 10) > (base.puz + 10) ? (std::abs(highest_index) + 10) : (base.puz + 10));
 
     if (highest_index >= 0) {
         approx.aoz[int(highest_index / 2)] = 1;
     } else {
-        approx.auz[int((abs(highest_index) - 1) / 2)] = 1;
+        approx.auz[int((std::abs(highest_index) - 1) / 2)] = 1;
     }
 
     BigDecimal check1(1, 1);
@@ -250,6 +250,13 @@ BigDecimal BigDecimal::sqrt(const BigDecimal &base, int converging_limit) {
     approx.resize(false, base.poz);
     approx.sign = base.sign;
     return approx;
+}
+
+// Absolute
+BigDecimal BigDecimal::abs_bd(const BigDecimal &base) {
+    BigDecimal return_val = base;
+    return_val.sign = true;
+    return return_val;
 }
 
 //Resize
@@ -310,14 +317,15 @@ std::string BigDecimal::toString() const {
     std::string str(range.oz + range.uz + 4, '0');
     str[0] = sign ? '+' : '-';
     for (int i = range.oz; i >= 0; --i) {
-        str[range.oz - i + 1] = char (aoz[i] + '0');
+        str[range.oz - i + 1] = char(aoz[i] + '0');
     }
     str[range.oz + 2] = '.';
     for (int i = 0; i <= range.uz; ++i) {
-        str[i + range.oz + 3] = char (auz[i] + '0');
+        str[i + range.oz + 3] = char(auz[i] + '0');
     }
     return str;
 }
+
 
 // Calculation Functions
 // Add
@@ -586,7 +594,7 @@ BigDecimal BigDecimal::divide(int divisor) const {
 
 BigDecimal BigDecimal::divide(const BigDecimal &divisor) const {
     BigDecimal return_value = divisor;
-    return_value.resize(true, (divisor.puz > puz ? divisor.puz : puz) + 10);
+    return_value.resize(true, (divisor.puz > puz ? divisor.puz : puz) + 100);
     return_value = invert(return_value);
     return_value = multiply(return_value);
     return_value.resize(true, (puz > divisor.puz ? puz : divisor.puz));
@@ -662,7 +670,7 @@ bool BigDecimal::greaterThan(const BigDecimal &compare) const {
                     return aoz[i] > compare.aoz[i];
                 }
             } else {
-                int j = abs(i) - 1;
+                int j = std::abs(i) - 1;
                 if (auz[j] != compare.auz[j]) {
                     return auz[j] > compare.auz[j];
                 }
@@ -741,7 +749,7 @@ bool BigDecimal::smallerThan(const BigDecimal &compare) const {
                     return aoz[i] < compare.aoz[i];
                 }
             } else {
-                int j = abs(i) - 1;
+                int j = std::abs(i) - 1;
                 if (auz[j] != compare.auz[j]) {
                     return auz[j] < compare.auz[j];
                 }
